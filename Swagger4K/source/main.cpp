@@ -11,6 +11,9 @@ const int VERTICAL_OFFSET = 50;
 const int PRESS_ANIM_OFFSET = 5;
 const float PRESS_SCALE = 0.9f;
 
+// OPTIONS!
+bool downscroll = false; // Legit just downscroll, how else do you want me to explain it??
+
 struct Note {
     int x, y;
     bool pressed;
@@ -79,7 +82,6 @@ int main(int argc, char* args[]) {
     }
 
     std::vector<Note> notes(4);
-    bool downscroll = false;
 
     int y_position = downscroll ? (SCREEN_HEIGHT - STRUM_NOTE_HEIGHT - VERTICAL_OFFSET) : VERTICAL_OFFSET;
     for (int i = 0; i < notes.size(); ++i) {
