@@ -1,48 +1,92 @@
 #include <iostream>
-#include "SDL.h"
+#include <SDL.h>
+#undef main
+#include <stdio.h>
 
 using namespace std;
 
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
+
+bool init();
+bool loadMedia();
+void close();
+SDL_Window* gWindow = NULL;
+SDL_Surface* gScreenSurface = NULL;
+SDL_Surface* gSwaggerMain = NULL;
+
+bool init()
+{
+	bool success = true;
+
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+		success = false;
+	}
+	else
+	{
+		gWindow = SDL_CreateWindow("Swagger 4K", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		if (gWindow == NULL)
+		{
+			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			success = false;
+		}
+		else
+		{
+			gScreenSurface = SDL_GetWindowSurface(gWindow);
+		}
+	}
+
+	return success;
+}
+
+bool loadMedia()
+{
+	bool success = true;
+
+	gSwaggerMain = SDL_LoadBMP("assets/images/test/bf.bmp");
+	if (gSwaggerMain == NULL)
+	{
+		printf("Unable to load image %s! SDL Error: %s\n", "assets/images/test/bf.bmp", SDL_GetError());
+		success = false;
+	}
+
+	return success;
+}
+
+void close()
+{
+	SDL_FreeSurface(gSwaggerMain);
+	gSwaggerMain = NULL;
+
+	SDL_DestroyWindow(gWindow);
+	gWindow = NULL;
+
+	SDL_Quit();
+}
+
+
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+	if (!init())
+	{
+		printf("Failed to initialize!\n");
+	}
+	else
+	{
+		if (!loadMedia())
+		{
+			printf("Failed to load media!\n");
+		}
+		else
+		{
+			SDL_BlitSurface(gSwaggerMain, NULL, gScreenSurface, NULL);
+			SDL_UpdateWindowSurface(gWindow);
+			SDL_Event e; bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
+		}
+	}
 
-        return 1;
-    }
+	close();
 
-    SDL_Window* window = SDL_CreateWindow("Swagger 4K", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-
-        SDL_Quit();
-
-        return 1;
-    }
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) {
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-
-        return 1;
-    }
-
-    SDL_Event event;
-    bool quit = false;
-
-    while (!quit) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                quit = true;
-            }
-        }
-
-        SDL_RenderClear(renderer);
-        // renderTextures
-        SDL_RenderPresent(renderer);
-    }
-
-    return 0;
+	return 0;
 }
