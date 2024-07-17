@@ -2,13 +2,14 @@
 #include <SDL_image.h>
 #include <vector>
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
 const int STRUM_NOTE_WIDTH = 100;
 const int STRUM_NOTE_HEIGHT = 100;
 const int SPACING = 20;
-const int VERTICAL_OFFSET = 50; 
+const int VERTICAL_OFFSET = 50;
 const int PRESS_ANIM_OFFSET = 5;
+const float PRESS_SCALE = 0.9f;
 
 struct Note {
     int x, y;
@@ -19,9 +20,15 @@ void drawStrumNotes(SDL_Renderer* renderer, std::vector<Note>& notes, SDL_Textur
     for (size_t i = 0; i < notes.size(); ++i) {
         SDL_Rect rect;
         rect.x = notes[i].x;
-        rect.y = notes[i].pressed ? notes[i].y + PRESS_ANIM_OFFSET : notes[i].y;
-        rect.w = STRUM_NOTE_WIDTH;
-        rect.h = STRUM_NOTE_HEIGHT;
+        rect.y = notes[i].y;
+        rect.w = notes[i].pressed ? static_cast<int>(STRUM_NOTE_WIDTH * PRESS_SCALE) : STRUM_NOTE_WIDTH;
+        rect.h = notes[i].pressed ? static_cast<int>(STRUM_NOTE_HEIGHT * PRESS_SCALE) : STRUM_NOTE_HEIGHT;
+
+        if (notes[i].pressed) {
+            rect.x += (STRUM_NOTE_WIDTH - rect.w) / 2;
+            rect.y += (STRUM_NOTE_HEIGHT - rect.h) / 2;
+        }
+
         SDL_RenderCopy(renderer, textures[i], nullptr, &rect);
     }
 }
@@ -57,7 +64,7 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    SDL_Texture* textures[4]; 
+    SDL_Texture* textures[4];
 
     textures[0] = IMG_LoadTexture(renderer, "assets/images/notes/leftN.png");
     textures[1] = IMG_LoadTexture(renderer, "assets/images/notes/downN.png");
@@ -67,7 +74,7 @@ int main(int argc, char* args[]) {
     for (int i = 0; i < 4; ++i) {
         if (textures[i] == nullptr) {
             SDL_Log("Failed to load texture %d! IMG_Error: %s", i, IMG_GetError());
-            return -1; 
+            return -1;
         }
     }
 
