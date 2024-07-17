@@ -1,35 +1,39 @@
 #include <SDL.h>
+#include <SDL_image.h>
 #include <vector>
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-const int STRUM_NOTE_WIDTH = 50;
-const int STRUM_NOTE_HEIGHT = 20;
-const int SPACING = 20; 
-const int VERTICAL_OFFSET = 50;
-const int PRESS_ANIM_OFFSET = 5; 
+const int STRUM_NOTE_WIDTH = 100;
+const int STRUM_NOTE_HEIGHT = 100;
+const int SPACING = 20;
+const int VERTICAL_OFFSET = 50; 
+const int PRESS_ANIM_OFFSET = 5;
 
 struct Note {
     int x, y;
     bool pressed;
 };
 
-void drawStrumNotes(SDL_Renderer* renderer, std::vector<Note>& notes) {
-    for (auto& note : notes) {
+void drawStrumNotes(SDL_Renderer* renderer, std::vector<Note>& notes, SDL_Texture* textures[]) {
+    for (size_t i = 0; i < notes.size(); ++i) {
         SDL_Rect rect;
-        rect.x = note.x;
-        rect.y = note.pressed ? note.y + PRESS_ANIM_OFFSET : note.y;
+        rect.x = notes[i].x;
+        rect.y = notes[i].pressed ? notes[i].y + PRESS_ANIM_OFFSET : notes[i].y;
         rect.w = STRUM_NOTE_WIDTH;
         rect.h = STRUM_NOTE_HEIGHT;
-
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_RenderCopy(renderer, textures[i], nullptr, &rect);
     }
 }
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL_Error: %s", SDL_GetError());
+        return -1;
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        SDL_Log("SDL_image could not initialize! IMG_Error: %s", IMG_GetError());
         return -1;
     }
 
@@ -51,6 +55,20 @@ int main(int argc, char* args[]) {
         SDL_DestroyWindow(window);
         SDL_Quit();
         return -1;
+    }
+
+    SDL_Texture* textures[4]; 
+
+    textures[0] = IMG_LoadTexture(renderer, "assets/images/notes/leftN.png");
+    textures[1] = IMG_LoadTexture(renderer, "assets/images/notes/downN.png");
+    textures[2] = IMG_LoadTexture(renderer, "assets/images/notes/upN.png");
+    textures[3] = IMG_LoadTexture(renderer, "assets/images/notes/rightN.png");
+
+    for (int i = 0; i < 4; ++i) {
+        if (textures[i] == nullptr) {
+            SDL_Log("Failed to load texture %d! IMG_Error: %s", i, IMG_GetError());
+            return -1; 
+        }
     }
 
     std::vector<Note> notes(4);
@@ -94,13 +112,18 @@ int main(int argc, char* args[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        drawStrumNotes(renderer, notes);
+        drawStrumNotes(renderer, notes, textures);
 
         SDL_RenderPresent(renderer);
     }
 
+    for (int i = 0; i < 4; ++i) {
+        SDL_DestroyTexture(textures[i]);
+    }
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 
     return 0;
