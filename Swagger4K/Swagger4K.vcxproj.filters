@@ -13,10 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Swagger4K">
+      <UniqueIdentifier>{6ff5cf0e-c8b4-4f7a-8092-eba57de4d37d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swagger4K">
+      <UniqueIdentifier>{f9dc546c-dee8-4318-b5de-aeb8046772d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\StrumNotes.cpp">
+      <Filter>Source Files\Swagger4K</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\StrumNotes.h">
+      <Filter>Header Files\Swagger4K</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
