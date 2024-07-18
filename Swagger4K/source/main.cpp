@@ -1,12 +1,17 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include "StrumNotes.h"
+#include <SDL_ttf.h>
+#include "Menu.h"
+#include "Gameplay.h"
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
-// OPTIONS!
-bool downscroll = false; // Legit just downscroll, how else do you want me to explain it??
+enum GameState {
+    MENU,
+    GAMEPLAY,
+    OPTIONS
+};
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -19,8 +24,17 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Swagger 4K", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (TTF_Init() == -1) {
+        SDL_Log("SDL_ttf could not initialize! TTF_Error: %s", TTF_GetError());
+        return -1;
+    }
 
+    SDL_Window* window = SDL_CreateWindow("Swagger 4K",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         SDL_Log("Window could not be created! SDL_Error: %s", SDL_GetError());
         SDL_Quit();
@@ -35,13 +49,9 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    StrumNotes strumNotes(renderer, downscroll);
-    strumNotes.loadTextures({
-        "assets/images/notes/leftN.png",
-        "assets/images/notes/downN.png",
-        "assets/images/notes/upN.png",
-        "assets/images/notes/rightN.png"
-        });
+    GameState currentState = MENU;
+    Menu menu(renderer);
+    Gameplay* gameplay = nullptr;
 
     bool quit = false;
     SDL_Event e;
@@ -51,34 +61,46 @@ int main(int argc, char* args[]) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            if (e.type == SDL_KEYDOWN) {
-                switch (e.key.keysym.sym) {
-                case SDLK_a: strumNotes.pressKey(0); break;
-                case SDLK_s: strumNotes.pressKey(1); break;
-                case SDLK_k: strumNotes.pressKey(2); break;
-                case SDLK_l: strumNotes.pressKey(3); break;
+
+            switch (currentState) {
+            case MENU:
+                menu.handleEvent(e);
+                if (menu.isSinglePlayerSelected()) {
+                    currentState = GAMEPLAY;
+                    gameplay = new Gameplay(renderer);
                 }
-            }
-            if (e.type == SDL_KEYUP) {
-                switch (e.key.keysym.sym) {
-                case SDLK_a: strumNotes.releaseKey(0); break;
-                case SDLK_s: strumNotes.releaseKey(1); break;
-                case SDLK_k: strumNotes.releaseKey(2); break;
-                case SDLK_l: strumNotes.releaseKey(3); break;
+                if (menu.isOptionsSelected()) {
+                    // Handle options selection
                 }
+                break;
+            case GAMEPLAY:
+                gameplay->handleEvent(e);
+                break;
+            case OPTIONS:
+                // Handle options events
+                break;
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        strumNotes.drawNotes();
-
-        SDL_RenderPresent(renderer);
+        switch (currentState) {
+        case MENU:
+            menu.update();
+            menu.render();
+            break;
+        case GAMEPLAY:
+            gameplay->update();
+            gameplay->render();
+            break;
+        case OPTIONS:
+            // Render options menu
+            break;
+        }
     }
 
+    delete gameplay;
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 

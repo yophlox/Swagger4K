@@ -19,18 +19,42 @@
     <Filter Include="Source Files\Swagger4K">
       <UniqueIdentifier>{f9dc546c-dee8-4318-b5de-aeb8046772d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Swagger4K\Menus">
+      <UniqueIdentifier>{66d7be92-ee4a-4681-b8da-42e4faa1c8c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Swagger4K\Gameplay">
+      <UniqueIdentifier>{99b45ae0-c66e-40bf-99e0-44205a4e4585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swagger4K\Gameplay">
+      <UniqueIdentifier>{250678a1-75e7-4f89-9d69-15507ba14d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swagger4K\Menus">
+      <UniqueIdentifier>{182b46a1-1cec-42d5-ad76-60bc621d0f63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\StrumNotes.cpp">
-      <Filter>Source Files\Swagger4K</Filter>
+      <Filter>Source Files\Swagger4K\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Menu.cpp">
+      <Filter>Source Files\Swagger4K\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Gameplay.cpp">
+      <Filter>Source Files\Swagger4K\Gameplay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\StrumNotes.h">
-      <Filter>Header Files\Swagger4K</Filter>
+      <Filter>Header Files\Swagger4K\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Menu.h">
+      <Filter>Header Files\Swagger4K\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Gameplay.h">
+      <Filter>Header Files\Swagger4K\Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
