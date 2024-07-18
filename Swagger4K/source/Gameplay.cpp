@@ -1,8 +1,8 @@
 #include "Gameplay.h"
 
-Gameplay::Gameplay(SDL_Renderer* renderer)
+Gameplay::Gameplay(SDL_Renderer* renderer, Menu& menu)
     : renderer(renderer) {
-    strumNotes = new StrumNotes(renderer, false); // Assume downscroll is false for now
+    strumNotes = new StrumNotes(renderer, menu.isDownscrollEnabled()); // Pass downscroll state from Menu
     strumNotes->loadTextures({
         "assets/images/notes/leftN.png",
         "assets/images/notes/downN.png",

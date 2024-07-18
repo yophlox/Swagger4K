@@ -1,12 +1,13 @@
 #include "Menu.h"
-#include <SDL_image.h> // Include SDL_image header
 
 Menu::Menu(SDL_Renderer* renderer)
     : renderer(renderer), singlePlayerSelected(false), optionsSelected(false),
-    singlePlayerButtonScale(1.0f), optionsButtonScale(1.0f) {
+    optionsMenuOpen(false), downscroll(false),
+    singlePlayerButtonScale(1.0f), optionsButtonScale(1.0f), backButtonScale(1.0f) {
 
     singlePlayerButton = { 540, 300, 200, 50 };
     optionsButton = { 540, 400, 200, 50 };
+    backButton = { 20, 20, 100, 50 };
 
     font = TTF_OpenFont("assets/fonts/arial.ttf", 24);
     if (font == nullptr) {
@@ -31,17 +32,35 @@ Menu::~Menu() {
 }
 
 void Menu::handleEvent(SDL_Event& e) {
-    if (e.type == SDL_MOUSEBUTTONDOWN) {
-        int x, y;
-        SDL_GetMouseState(&x, &y);
+    if (optionsMenuOpen) {
+        if (e.type == SDL_MOUSEBUTTONDOWN) {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
 
-        if (x >= singlePlayerButton.x && x <= singlePlayerButton.x + singlePlayerButton.w &&
-            y >= singlePlayerButton.y && y <= singlePlayerButton.y + singlePlayerButton.h) {
-            singlePlayerSelected = true;
+            if (x >= backButton.x && x <= backButton.x + backButton.w &&
+                y >= backButton.y && y <= backButton.y + backButton.h) {
+                optionsMenuOpen = false;
+            }
+
+            if (x >= 500 && x <= 600 && y >= 500 && y <= 550) {
+                downscroll = !downscroll;
+            }
         }
-        if (x >= optionsButton.x && x <= optionsButton.x + optionsButton.w &&
-            y >= optionsButton.y && y <= optionsButton.y + optionsButton.h) {
-            optionsSelected = true;
+    }
+    else {
+        if (e.type == SDL_MOUSEBUTTONDOWN) {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+
+            if (x >= singlePlayerButton.x && x <= singlePlayerButton.x + singlePlayerButton.w &&
+                y >= singlePlayerButton.y && y <= singlePlayerButton.y + singlePlayerButton.h) {
+                singlePlayerSelected = true;
+            }
+            if (x >= optionsButton.x && x <= optionsButton.x + optionsButton.w &&
+                y >= optionsButton.y && y <= optionsButton.y + optionsButton.h) {
+                optionsSelected = true;
+                optionsMenuOpen = true;
+            }
         }
     }
 }
@@ -63,12 +82,31 @@ void Menu::update() {
     else {
         optionsButtonScale = 1.0f;
     }
+
+    if (optionsMenuOpen) {
+        backButtonScale = 1.0f + animationSpeed;
+        if (backButtonScale > 1.1f) backButtonScale = 1.0f;
+    }
+    else {
+        backButtonScale = 1.0f;
+    }
 }
 
 void Menu::render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
+    if (optionsMenuOpen) {
+        renderOptionsMenu();
+    }
+    else {
+        renderMainMenu();
+    }
+
+    SDL_RenderPresent(renderer);
+}
+
+void Menu::renderMainMenu() {
     SDL_Rect bgRect = { 0, 0, 1280, 720 };
     SDL_RenderCopy(renderer, backgroundTexture, nullptr, &bgRect);
 
@@ -90,8 +128,31 @@ void Menu::render() {
 
     renderText("Single Player", spButtonDest);
     renderText("Options", optionsButtonDest);
+}
 
-    SDL_RenderPresent(renderer);
+void Menu::renderOptionsMenu() {
+    SDL_Rect bgRect = { 0, 0, 1280, 720 };
+    SDL_RenderCopy(renderer, backgroundTexture, nullptr, &bgRect);
+
+    SDL_Rect backBtnDest = {
+        backButton.x - static_cast<int>((backButton.w * (backButtonScale - 1.0f)) / 2),
+        backButton.y - static_cast<int>((backButton.h * (backButtonScale - 1.0f)) / 2),
+        static_cast<int>(backButton.w * backButtonScale),
+        static_cast<int>(backButton.h * backButtonScale)
+    };
+
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &backBtnDest);
+    renderText("Back", backBtnDest);
+
+    SDL_Rect downscrollOptionRect = { 500, 500, 100, 50 };
+    SDL_Rect downscrollCheckbox = { downscrollOptionRect.x, downscrollOptionRect.y, 20, 20 };
+    SDL_RenderCopy(renderer, buttonTexture, nullptr, &downscrollOptionRect);
+    if (downscroll) {
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderFillRect(renderer, &downscrollCheckbox);
+    }
+
+    renderText("Downscroll", downscrollOptionRect);
 }
 
 bool Menu::isSinglePlayerSelected() const {
@@ -100,6 +161,10 @@ bool Menu::isSinglePlayerSelected() const {
 
 bool Menu::isOptionsSelected() const {
     return optionsSelected;
+}
+
+bool Menu::isDownscrollEnabled() const {
+    return downscroll;
 }
 
 void Menu::renderText(const char* text, SDL_Rect& rect) {

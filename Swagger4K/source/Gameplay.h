@@ -3,10 +3,11 @@
 
 #include <SDL.h>
 #include "StrumNotes.h"
+#include "Menu.h"
 
 class Gameplay {
 public:
-    Gameplay(SDL_Renderer* renderer);
+    Gameplay(SDL_Renderer* renderer, Menu& menu);
     ~Gameplay();
 
     void handleEvent(SDL_Event& e);

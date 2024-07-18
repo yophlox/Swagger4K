@@ -67,17 +67,11 @@ int main(int argc, char* args[]) {
                 menu.handleEvent(e);
                 if (menu.isSinglePlayerSelected()) {
                     currentState = GAMEPLAY;
-                    gameplay = new Gameplay(renderer);
-                }
-                if (menu.isOptionsSelected()) {
-                    // Handle options selection
+                    gameplay = new Gameplay(renderer, menu);
                 }
                 break;
             case GAMEPLAY:
                 gameplay->handleEvent(e);
-                break;
-            case OPTIONS:
-                // Handle options events
                 break;
             }
         }
@@ -90,9 +84,6 @@ int main(int argc, char* args[]) {
         case GAMEPLAY:
             gameplay->update();
             gameplay->render();
-            break;
-        case OPTIONS:
-            // Render options menu
             break;
         }
     }
