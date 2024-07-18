@@ -19,12 +19,8 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Swagger 4K",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Swagger 4K", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
     if (window == nullptr) {
         SDL_Log("Window could not be created! SDL_Error: %s", SDL_GetError());
         SDL_Quit();
