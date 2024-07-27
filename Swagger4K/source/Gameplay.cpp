@@ -22,6 +22,10 @@ void Gameplay::handleEvent(SDL_Event& e) {
         case SDLK_s: strumNotes->pressKey(1); break;
         case SDLK_k: strumNotes->pressKey(2); break;
         case SDLK_l: strumNotes->pressKey(3); break;
+        case SDLK_LEFT: strumNotes->pressKey(0); break;
+        case SDLK_DOWN: strumNotes->pressKey(1); break;
+        case SDLK_UP: strumNotes->pressKey(2); break;
+        case SDLK_RIGHT: strumNotes->pressKey(3); break;
         }
     }
     if (e.type == SDL_KEYUP) {
@@ -30,6 +34,10 @@ void Gameplay::handleEvent(SDL_Event& e) {
         case SDLK_s: strumNotes->releaseKey(1); break;
         case SDLK_k: strumNotes->releaseKey(2); break;
         case SDLK_l: strumNotes->releaseKey(3); break;
+        case SDLK_LEFT: strumNotes->releaseKey(0); break;
+        case SDLK_DOWN: strumNotes->releaseKey(1); break;
+        case SDLK_UP: strumNotes->releaseKey(2); break;
+        case SDLK_RIGHT: strumNotes->releaseKey(3); break;
         }
     }
 }
