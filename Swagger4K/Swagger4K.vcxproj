@@ -130,10 +130,11 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;shell32.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)assets" "$(TargetDir)\assets\" /E /Y</Command>
+      <Command>XCOPY "$(SolutionDir)assets" "$(TargetDir)\assets\" /E /Y
+XCOPY "$(SolutionDir)dlls\x86" "$(TargetDir)\" /E /Y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy ASSETS Folder</Message>
+      <Message>copy dlls and assets</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -176,10 +177,11 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;shell32.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(SolutionDir)assets" "$(TargetDir)\assets\" /E /Y</Command>
+      <Command>XCOPY "$(SolutionDir)assets" "$(TargetDir)\assets\" /E /Y
+XCOPY "$(SolutionDir)dlls\x64" "$(TargetDir)\" /E /Y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy ASSETS Folder</Message>
+      <Message>copy dlls and assets</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
