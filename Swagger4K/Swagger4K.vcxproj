@@ -77,16 +77,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>./Swagger4K/Swagger4K/buildLib;./Swagger4K/Swagger4K/include/SDL/lib/x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\TyIndev\Documents\GitHub\Swagger4K\Swagger4K\include\SDL\lib\x86;$(IncludePath)</IncludePath>
+    <LibraryPath>buildLib/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>./Swagger4K/Swagger4K/buildLib;C:\Users\TyIndev\Documents\GitHub\Swagger4K\Swagger4K\include\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>include/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>./Swagger4K/Swagger4K/buildLib;C:\Users\TyIndev\Documents\GitHub\Swagger4K\Swagger4K\include\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>buildLib/x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
